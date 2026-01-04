@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: niko-admin
+    env: python
+    plan: starter
+    buildCommand: pip install -r admin_panel/requirements.txt
+    startCommand: uvicorn admin_panel.admin_app:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+
+  - type: worker
+    name: niko-worker
+    env: python
+    plan: starter
+    buildCommand: pip install -r bot_worker/requirements.txt
+    startCommand: python bot_worker/bot.py
+    autoDeploy: true
