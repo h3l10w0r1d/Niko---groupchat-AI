@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8"><title>Niko Admin</title></head>
+  <body>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>Groups seen by bot</h2>
+      <a href="/logout">Logout</a>
+    </div>
+
+    <h3>Broadcast to admins (DM)</h3>
+    <form method="post" action="/api/admin/notify">
+      <input name="message" style="width:420px" placeholder="Message to all admins"/>
+      <button type="submit">Send</button>
+    </form>
+
+    <hr/>
+
+    {% for c in chats %}
+      <div style="padding:10px; border:1px solid #ddd; margin-bottom:10px;">
+        <div><b>{{ c.title or c.username or ("Chat " ~ c.chat_id) }}</b> — {{ c.chat_type }} — last: {{ c.last_seen_utc }}</div>
+
+        <form method="post" action="/api/chats/{{ c.chat_id }}/settings" style="margin-top:6px;">
+          <label>Memory enabled:
+            <select name="memory_enabled">
+              <option value="true" {% if c.memory_enabled %}selected{% endif %}>true</option>
+              <option value="false" {% if not c.memory_enabled %}selected{% endif %}>false</option>
+            </select>
+          </label>
+
+          <label style="margin-left:10px;">RPM:
+            <input type="number" name="max_requests_per_minute" value="{{ c.rpm }}" min="1" max="600"/>
+          </label>
+
+          <label style="margin-left:10px;">RPD:
+            <input type="number" name="max_requests_per_day" value="500" min="1" max="50000"/>
+          </label>
+
+          <button type="submit" style="margin-left:10px;">Save</button>
+        </form>
+      </div>
+    {% endfor %}
+  </body>
+</html>
